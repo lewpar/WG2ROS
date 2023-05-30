@@ -5,8 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WG2ROS"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="WG2ROS" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
 
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" FontWeight="DemiBold">Wireguard Server Config Path:</Label>
+            <TextBox x:Name="TextBoxServerConfigPath" 
+                     Grid.Row="1" Grid.Column="0" 
+                     Margin="5 0 5 0" VerticalContentAlignment="Center" 
+                     TextChanged="TextBoxServerConfigPath_TextChanged"></TextBox>
+            <Button x:Name="ButtonBrowseServerConfig" Grid.Row="1" Grid.Column="1" Margin="0 0 5 0" Padding="5" Click="ButtonBrowseServerConfig_Click">Browse</Button>
+            <Label x:Name="LabelBrowsePlaceholder" IsHitTestVisible="False" Grid.Row="1" Grid.Column="0" Margin="5 0 5 0">Browse for WireGuard file or drag and drop into the box below.</Label>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <Label Grid.Row="0" FontWeight="DemiBold">Preview</Label>
+            <TextBox x:Name="TextBoxPreviewConfig" Grid.Row="1" Margin="5 0 5 5"
+                     AllowDrop="True" PreviewDragOver="TextBoxServerConfigPath_PreviewDragOver" PreviewDrop="TextBoxServerConfigPath_PreviewDrop"
+                     VerticalScrollBarVisibility="Auto"></TextBox>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Button x:Name="ButtonTransform" Margin="5" Padding="5">Transform</Button>
+        </Grid>
     </Grid>
 </Window>

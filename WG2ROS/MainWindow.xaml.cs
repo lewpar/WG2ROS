@@ -64,11 +64,23 @@ namespace WG2ROS
         private void ButtonBrowseServerConfig_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "conf files (*.conf)|*.conf|All files (*.*)|*.*";
             var result = ofd.ShowDialog();
             if(result.HasValue && result.Value)
             {
                 TextBoxServerConfigPath.Text = ofd.FileName;
                 GetConfig();
+            }
+        }
+
+        private void ButtonTransform_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "rsc files (*.rsc)|*.rsc|All files (*.*)|*.*";
+            var result = sfd.ShowDialog();
+            if(result.HasValue && result.Value) 
+            {
+                MessageBox.Show("Saving to " + sfd.FileName);
             }
         }
     }

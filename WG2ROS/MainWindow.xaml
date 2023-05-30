@@ -46,7 +46,7 @@
         </Grid>
 
         <Grid Grid.Row="2">
-            <Button x:Name="ButtonTransform" Margin="5" Padding="5">Transform</Button>
+            <Button x:Name="ButtonTransform" Margin="5" Padding="5" Click="ButtonTransform_Click">Transform</Button>
         </Grid>
     </Grid>
 </Window>

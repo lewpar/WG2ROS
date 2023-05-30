@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +14,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WG2ROS
 {
@@ -25,6 +25,16 @@ namespace WG2ROS
         public MainWindow()
         {
             InitializeComponent();
+
+            TextBoxWireGuardInterfaceName.Text = "WireguardP2S";
+        }
+
+        private string previewString;
+
+        private void SetPreview(string value)
+        {
+            TextBoxPreviewConfig.Text = value;
+            previewString = value;
         }
 
         private void TextBoxServerConfigPath_TextChanged(object sender, TextChangedEventArgs e)
@@ -58,7 +68,7 @@ namespace WG2ROS
 
             var cfg = File.ReadAllText(TextBoxServerConfigPath.Text);
 
-            TextBoxPreviewConfig.Text = cfg;
+            SetPreview(cfg);
         }
 
         private void ButtonBrowseServerConfig_Click(object sender, RoutedEventArgs e)
@@ -80,8 +90,47 @@ namespace WG2ROS
             var result = sfd.ShowDialog();
             if(result.HasValue && result.Value) 
             {
-                MessageBox.Show("Saving to " + sfd.FileName);
+                if(string.IsNullOrEmpty(TextBoxPreviewConfig.Text))
+                {
+                    return;
+                }
+
+                if(!Directory.Exists(Path.GetDirectoryName(sfd.FileName)))
+                {
+                    return;
+                }
+
+                File.WriteAllText(sfd.FileName, ParseCommands(previewString));
             }
+        }
+
+        private string ParseCommands(string input)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(@"/interface wireguard peers");
+            sb.AppendLine("");
+
+            string pattern = @"\[Peer\]\r\nPublicKey\s=\s([a-zA-Z0-9\+\=\/]+)\r\nPresharedKey\s=\s([a-zA-Z0-9\+\=\/]+)\r\nAllowedIPs\s=\s([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2})";
+
+            var matches = Regex.Matches(input,
+                pattern,
+                RegexOptions.None);
+
+            int i = 1;
+            foreach(Match match in matches)
+            {
+                string address = match.Groups[3].Value;
+                string presharedKey = match.Groups[2].Value;
+                string publicKey = match.Groups[1].Value;
+
+                sb.AppendLine($"# Peer {i}");
+                sb.AppendLine($"add allowed-address={address} comment=\"peer {i}\" interface=\"{TextBoxWireGuardInterfaceName.Text}\" preshared-key=\"{presharedKey}\" public-key=\"{publicKey}\"");
+                sb.AppendLine("");
+                i = i + 1;
+            }
+
+            return sb.ToString();
         }
     }
 }

@@ -46,7 +46,17 @@
         </Grid>
 
         <Grid Grid.Row="2">
-            <Button x:Name="ButtonTransform" Margin="5" Padding="5" Click="ButtonTransform_Click">Transform</Button>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <StackPanel Orientation="Vertical">
+                    <Label FontWeight="DemiBold">WireGuard Interface Name</Label>
+                    <TextBox x:Name="TextBoxWireGuardInterfaceName" Margin="5 0"></TextBox>
+                </StackPanel>
+            </Grid>
+            <Button x:Name="ButtonTransform" Grid.Row="1" Margin="5" Padding="5" Click="ButtonTransform_Click">Transform</Button>
         </Grid>
     </Grid>
 </Window>
